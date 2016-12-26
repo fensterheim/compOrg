@@ -42,10 +42,16 @@ replaceChar:
 	movq	%rsp,	%rbp
 	#...save callee-save registered if needed
 	movq	$1,%rdx		#index
+	movzbq	%dil,%r11	#get the length
 .replaceFor:
-	#TODO compare byte by byte of the pstring with the oldchar
+	#TODO test if this works
+	leaq	(%rdi, %rdx,),%r10
+	cmpb	%r10,%rsi
+	jne	.continueFor
+	movb	%dl,%r10
+.continueFor:
 	addq	$1,%rdx
-	cmpb	%dl,%dil
+	cmpq	%rdx,%r11
 	ja	.replaceFor
 	movq	%rdi,%rax
 	#...restoring calee-save registers if needed
